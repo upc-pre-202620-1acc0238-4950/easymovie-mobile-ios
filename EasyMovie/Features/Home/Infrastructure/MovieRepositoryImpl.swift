@@ -6,10 +6,18 @@
 //
 
 class MovieRepositoryImpl: MovieRepository {
-    func getMovies() async -> [Movie] {
-        return [
-            Movie(id: 1, title: "Inception", poster: "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg", director: "Christopher Nolan")
-        ]
+    
+    let api = MovieApi()
+    
+    func getMovies() async throws -> [Movie] {
+        
+        let dtos = try await api.getMovies()
+        
+        return dtos.map { dto in
+            Movie(id: dto.id, title: dto.title, poster: dto.poster, director: dto.director)
+        }
+        
+       
     }
     
     

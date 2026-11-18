@@ -16,7 +16,12 @@ class HomeViewModel {
     func getMovies() async {
         isLoading = true
         
-        movies = await repository.getMovies()
+        do {
+            movies = try await repository.getMovies()
+
+        }   catch {
+            
+        }
         isLoading = false
     }
     

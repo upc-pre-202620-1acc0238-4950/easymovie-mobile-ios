@@ -9,43 +9,34 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var viewModel = HomeViewModel()
+    @State private var selectedMovie: Movie?
     
     var body: some View {
         VStack{
             List {
                 ForEach(viewModel.movies) { movie in
-                    HStack (alignment: .top){
-                        AsyncImage(url: URL(string: movie.poster)) { phase in
-                            switch phase {
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    
-                            case .failure:
-                                Image(systemName: "film")
-                                    .resizable()
-                                    .scaledToFit()
-                            case .empty:
-                                EmptyView()
-                            @unknown default:
-                                EmptyView()
-                            }
-                            
-                            
+                    MovieCard(movie: movie)
+                        .onTapGesture {
+                            selectedMovie = movie
                         }
-                        .frame(width: 80, height: 120)
-                        Text(movie.title)
-                    }
+                    
                 }
-                
+                .listRowSeparator(.hidden)
             }
-
+            .listStyle(.plain)
+            .navigationDestination(item: $selectedMovie) { movie in
+                MovieDetailView(movie: movie)
+            }
         }
+        
+        
+        
         .task {
             await viewModel.getMovies()
         }
+        
     }
+    
 }
 
 #Preview {
